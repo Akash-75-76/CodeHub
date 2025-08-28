@@ -7,6 +7,7 @@ const {pushRepo}=require("./controllers/push");
 const {pullRepo}=require("./controllers/pull");
 const {revertRepo}=require("./controllers/revert");
 yargs(hideBin(process.argv))
+  .command("start", "Starts a new server", {}, startServer)
   .command("init", "Initialize a new repository", {}, initRepo)
   .command(
     "add <file>",
@@ -44,3 +45,7 @@ yargs(hideBin(process.argv))
     revertRepo
   )
   .argv;
+
+  function startServer() {
+    console.log("Starting server...");
+  }
