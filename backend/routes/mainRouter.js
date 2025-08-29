@@ -3,9 +3,11 @@ const userRouter = require("./user.router");
 
 const mainRouter = express.Router();
 const repoRouter = require("./repo.router");
+const issueRouter = require("./issue.router");
 // Mount userRouter with no prefix
 mainRouter.use("/", userRouter);
 mainRouter.use("/", repoRouter);
+mainRouter.use("/",issueRouter);
 
 // Root route
 mainRouter.get("/", (req, res) => {
