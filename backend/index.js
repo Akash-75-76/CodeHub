@@ -8,7 +8,7 @@ const http = require("http");
 const { Server } = require("socket.io");
 const yargs = require("yargs");
 const { hideBin } = require("yargs/helpers");
-
+const mainRouter=require("./routes/mainRouter");
 // Load environment variables
 dotenv.config();
 
@@ -71,7 +71,7 @@ function startServer() {
   app.use(cors({ origin: "*" }));
   app.use(bodyparser.json());
   app.use(bodyparser.urlencoded({ extended: true }));
-
+  app.use("/",mainRouter);
   const port = process.env.PORT || 3000;
 
   // Connect to MongoDB
@@ -107,9 +107,12 @@ function startServer() {
         });
       });
 
-      // Express routes
-      app.get("/", (req, res) => {
-        res.send("🚀 Welcome to the CodeHub API");
+      
+
+      const db=mongoose.connection;
+
+      db.once("open",async()=>{
+        console.log("CRUD operations are called");
       });
 
       // Start server
