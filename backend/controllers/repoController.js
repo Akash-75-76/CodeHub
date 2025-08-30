@@ -1,6 +1,6 @@
 const mongoose=require("mongoose");
 const Repository=require("../models/repoModel");
-const User=require("../models/userMode");
+const User=require("../models/userModel");
 const Issue=require("../models/IssueModel");
 const createRepository = async (req, res) => {
     try {
@@ -35,16 +35,81 @@ const createRepository = async (req, res) => {
     }
 };
 
-const getAllRepositories =async (req, res) => {
-    res.send("📂 All repository details have been fetched successfully.");
+const getAllRepositories = async (req, res) => {
+    try {
+        const repositories = await Repository.find()
+            .populate("owner", "username email")
+            .populate("issues");
+
+        res.status(200).json({
+            success: true,
+            count: repositories.length,
+            data: repositories
+        });
+    } catch (error) {
+        console.log("Error fetching all repositories:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
 };
 
-const fetchRepositoryById =async (req, res) => {
-    res.send("🔍 Repository details fetched by ID.");
+
+const fetchRepositoryById = async (req, res) => {
+    const repoId = req.params.id;
+    try {
+        const repository = await Repository.findById(repoId)
+            .populate("owner", "username email")
+            .populate("issues");
+
+        if (!repository) {
+            return res.status(404).json({
+                success: false,
+                message: "Repository not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: repository
+        });
+    } catch (error) {
+        console.log("Error fetching repository by id:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
 };
 
-const fetchRepositoryByName =async (req, res) => {
-    res.send("🔍 Repository details fetched by name.");
+
+const fetchRepositoryByName = async (req, res) => {
+    const repoName = req.params.name;
+
+    try {
+        const repository = await Repository.findOne({ name: repoName })
+            .populate("owner", "username email")
+            .populate("issues");
+
+        if (!repository) {
+            return res.status(404).json({
+                success: false,
+                message: "Repository not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: repository
+        });
+    } catch (error) {
+        console.log("Error fetching repository by name:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
 };
 
 const fetchRepositoryForCurrentUser = async (req, res) => {
