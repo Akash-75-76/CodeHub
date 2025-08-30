@@ -1,4 +1,4 @@
-const express=require=("express");
+const express=require("express");
 const issueController=require("../controllers/issueController.js");
 
 const issueRouter=express.Router();
