@@ -1,7 +1,7 @@
 const mongoose=require("mongoose");
 const Repository=require("../models/repoModel");
 const User=require("../models/userModel");
-const Issue=require("../models/IssueModel");
+const Issue=require("../models/issueModel");
 const createRepository = async (req, res) => {
     try {
         const {owner,name,issues,content,description,visibility}=req.body;
@@ -113,19 +113,112 @@ const fetchRepositoryByName = async (req, res) => {
 };
 
 const fetchRepositoryForCurrentUser = async (req, res) => {
-    res.send("👤 Repositories for the currently logged-in user have been retrieved.");
+    const userId = req.params.userId;
+    try {
+        const repositories = await Repository.find({ owner: userId })
+            .populate("owner", "username email")
+            .populate("issues");
+
+            if (repositories.length === 0) {
+                return res.status(404).json({
+                    success: false,
+                    message: "No repositories found for this user"
+                });
+            }
+
+        res.status(200).json({
+            success: true,
+            count: repositories.length,
+            data: repositories
+        });
+    } catch (error) {
+        console.log("Error fetching repositories for current user:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
 };
 
 const updateRepository = async (req, res) => {
-    res.send("✏️ Repository details have been successfully updated.");
+    const {id}=req.params;
+    const{content,description}=req.body;
+
+    try {
+        const updatedRepository = await Repository.findByIdAndUpdate(id, { content, description }, { new: true })
+            .populate("owner", "username email")
+            .populate("issues");
+
+        if (!updatedRepository) {
+            return res.status(404).json({
+                success: false,
+                message: "Repository not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: updatedRepository
+        });
+    } catch (error) {
+        console.log("Error updating repository:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
 };
 
 const toggleVisibility = async (req, res) => {
-    res.send("👁 Repository visibility has been changed successfully.");
+    const {id}=req.params;
+    try {
+        const repository = await Repository.findById(id);
+        if (!repository) {
+            return res.status(404).json({
+                success: false,
+                message: "Repository not found"
+            });
+        }
+
+        repository.isPrivate = !repository.isPrivate;
+        await repository.save();
+
+        res.status(200).json({
+            success: true,
+            data: repository
+        });
+    } catch (error) {
+        console.log("Error toggling repository visibility:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
 };
 
 const deleteRepositoryById = async (req, res) => {
-    res.send("🗑 Repository has been deleted successfully.");
+    const { id } = req.params;
+
+    try {
+        const deletedRepository = await Repository.findByIdAndDelete(id);
+        if (!deletedRepository) {
+            return res.status(404).json({
+                success: false,
+                message: "Repository not found"
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "🗑 Repository has been deleted successfully."
+        });
+    } catch (error) {
+        console.log("Error deleting repository:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error"
+        });
+    }
 };
 
 module.exports = {
