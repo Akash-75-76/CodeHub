@@ -1,0 +1,107 @@
+/* auth.css */
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #0d1117; /* dark GitHub background */
+  color: #c9d1d9;
+}
+
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 20px;
+}
+
+.login-logo-container {
+  margin-bottom: 20px;
+}
+
+.logo-login {
+  width: 60px;
+  height: 60px;
+}
+
+.login-box-wrapper {
+  background-color: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  padding: 32px;
+  width: 100%;
+  max-width: 360px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.3);
+}
+
+.login-heading {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.login-box {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #c9d1d9;
+  margin-bottom: 6px;
+  display: block;
+}
+
+.input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #30363d;
+  border-radius: 6px;
+  background-color: #0d1117;
+  color: #c9d1d9;
+  font-size: 14px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #58a6ff;
+  box-shadow: 0 0 0 2px rgba(56, 139, 253, 0.4);
+}
+
+.login-btn {
+  margin-top: 10px;
+  padding: 10px 16px;
+  border-radius: 6px;
+  background-color: #238636 !important;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.login-btn:hover:enabled {
+  background-color: #2ea043 !important;
+}
+
+.login-btn:disabled {
+  background-color: #30363d !important;
+  cursor: not-allowed;
+}
+
+.pass-box {
+  margin-top: 20px;
+  font-size: 14px;
+  text-align: center;
+  color: #8b949e;
+}
+
+.pass-box a {
+  color: #58a6ff;
+  text-decoration: none;
+}
+
+.pass-box a:hover {
+  text-decoration: underline;
+}

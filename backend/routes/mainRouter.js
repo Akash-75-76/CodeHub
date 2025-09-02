@@ -1,17 +1,16 @@
 const express = require("express");
 const userRouter = require("./user.router");
-
-const mainRouter = express.Router();
 const repoRouter = require("./repo.router");
 const issueRouter = require("./issue.router");
-// Mount userRouter with no prefix
-mainRouter.use("/", userRouter);
-mainRouter.use("/", repoRouter);
-mainRouter.use("/",issueRouter);
 
-// Root route
+const mainRouter = express.Router();
+
+mainRouter.use(userRouter);
+mainRouter.use(repoRouter);
+mainRouter.use(issueRouter);
+
 mainRouter.get("/", (req, res) => {
-  res.send("🚀 Welcome to the CodeHub API");
+  res.send("Welcome!");
 });
 
 module.exports = mainRouter;

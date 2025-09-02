@@ -1,8 +1,9 @@
 const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
-const dotenv = require("dotenv");
-dotenv.config();
+const bcrypt = require("bcryptjs");
 const { MongoClient, ObjectId } = require("mongodb");
+const dotenv = require("dotenv");
+
+dotenv.config();
 const uri = process.env.MONGO_URL;
 
 let client;
@@ -17,112 +18,140 @@ async function connectClient() {
   }
 }
 
-const getAllUsers = async (req, res) => {
-  try {
-    await connectClient();
-    const db = client.db("codehub");
-
-    const users = await db.collection("users").find().toArray();
-    res.status(200).json({ users });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
-
-const signup = async (req, res) => {
+/**
+ * Signup
+ */
+async function signup(req, res) {
   const { username, password, email } = req.body;
+
   try {
     await connectClient();
     const db = client.db("codehub");
+    const usersCollection = db.collection("users");
 
-    const user = await db.collection("users").findOne({ username });
-    if (user) {
-      return res.status(400).json({ message: "User already exists" });
+    // check existing username or email
+    const existing = await usersCollection.findOne({
+      $or: [{ username }, { email }],
+    });
+    if (existing) {
+      return res.status(400).json({ message: "User already exists!" });
     }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const result = await db.collection("users").insertOne({
+    const newUser = {
       username,
-      email,
       password: hashedPassword,
+      email,
       repositories: [],
       followedUsers: [],
       starRepos: [],
-    });
-    const token = jwt.sign({ id: result.insertedId }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-    res
-      .status(201)
-      .json({ message: "User created", userId: result.insertedId, token });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+    };
 
-const login = async (req, res) => {
+    const result = await usersCollection.insertOne(newUser);
+
+    const token = jwt.sign(
+      { id: result.insertedId },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
+    res.json({ token, userId: result.insertedId });
+  } catch (err) {
+    console.error("❌ Error during signup:", err.message);
+    res.status(500).json({ message: err.message });
+  }
+}
+
+/**
+ * Login
+ */
+async function login(req, res) {
   const { email, password } = req.body;
+
   try {
     await connectClient();
     const db = client.db("codehub");
+    const usersCollection = db.collection("users");
 
-    const user = await db.collection("users").findOne({ email });
+    const user = await usersCollection.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Invalid credentials!" });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      return res.status(400).json({ message: "Invalid credentials!" });
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
-    res.status(200).json({ message: "Login successful", token });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
-  }
-};
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
-const getUserProfile = async (req, res) => {
-  const currentId = req.params.id;
+    res.json({ token, userId: user._id });
+  } catch (err) {
+    console.error("❌ Error during login:", err.message);
+    res.status(500).json({ message: err.message });
+  }
+}
+
+/**
+ * Get All Users
+ */
+async function getAllUsers(req, res) {
   try {
     await connectClient();
     const db = client.db("codehub");
+    const usersCollection = db.collection("users");
 
-    const user = await db.collection("users").findOne(
-      { _id: new ObjectId(currentId) },
-      { projection: { password: 0 } } // exclude password field
-    );
+    const users = await usersCollection.find({}).toArray();
+    res.json(users);
+  } catch (err) {
+    console.error("❌ Error fetching users:", err.message);
+    res.status(500).json({ message: err.message });
+  }
+}
+
+/**
+ * Get User Profile
+ */
+async function getUserProfile(req, res) {
+  const currentID = req.params.id;
+
+  try {
+    await connectClient();
+    const db = client.db("codehub");
+    const usersCollection = db.collection("users");
+
+    const user = await usersCollection.findOne({
+      _id: new ObjectId(currentID),
+    });
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found!" });
     }
 
-    res.status(200).json({ user });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.json(user);
+  } catch (err) {
+    console.error("❌ Error fetching profile:", err.message);
+    res.status(500).json({ message: err.message });
   }
-};
+}
 
-const updateUserProfile = async (req, res) => {
-  const currentId = req.params.id;
+/**
+ * Update User Profile
+ */
+async function updateUserProfile(req, res) {
+  const currentID = req.params.id;
   const { email, password } = req.body;
 
   try {
     await connectClient();
     const db = client.db("codehub");
-
-    if (username) {
-      return res.status(400).json({ message: "Username cannot be updated" });
-    }
+    const usersCollection = db.collection("users");
 
     let updateFields = {};
     if (email) updateFields.email = email;
@@ -132,44 +161,48 @@ const updateUserProfile = async (req, res) => {
       updateFields.password = hashedPassword;
     }
 
-    const result = await db
-      .collection("users")
-      .updateOne({ _id: new ObjectId(currentId) }, { $set: updateFields });
+    const result = await usersCollection.findOneAndUpdate(
+      { _id: new ObjectId(currentID) },
+      { $set: updateFields },
+      { returnDocument: "after" }
+    );
 
-    if (result.modifiedCount === 0) {
-      return res
-        .status(404)
-        .json({ message: "User not found or no changes made" });
+    if (!result.value) {
+      return res.status(404).json({ message: "User not found!" });
     }
 
-    res.status(200).json({ message: "User profile updated" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.json(result.value);
+  } catch (err) {
+    console.error("❌ Error updating profile:", err.message);
+    res.status(500).json({ message: err.message });
   }
-};
+}
 
-const deleteUserProfile = async (req, res) => {
-  const currentId = req.params.id;
+/**
+ * Delete User Profile
+ */
+async function deleteUserProfile(req, res) {
+  const currentID = req.params.id;
 
   try {
     await connectClient();
     const db = client.db("codehub");
+    const usersCollection = db.collection("users");
 
-    const result = await db
-      .collection("users")
-      .deleteOne({ _id: new ObjectId(currentId) });
+    const result = await usersCollection.deleteOne({
+      _id: new ObjectId(currentID),
+    });
 
     if (result.deletedCount === 0) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ message: "User not found!" });
     }
 
-    res.status(200).json({ message: "User profile deleted" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.json({ message: "User Profile Deleted!" });
+  } catch (err) {
+    console.error("❌ Error deleting profile:", err.message);
+    res.status(500).json({ message: err.message });
   }
-};
+}
 
 module.exports = {
   getAllUsers,

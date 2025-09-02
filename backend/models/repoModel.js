@@ -1,41 +1,40 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
-
-const RepositorySchema=new Schema({
-    name:{
-        type:String,
-        required:true,
-        unique:true
+const RepositorySchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+      unique: true,
     },
-    description:{
-        type:String,
-        required:true
+    description: {
+      type: String,
     },
-    content:[
-        {
-            type:String,
-            required:true
-        }
+    content: [
+      {
+        type: String,
+      },
     ],
-    visibility:{
-        type:String,
-        enum:["public","private"],
-        default:"public"
+    visibility: {
+  type: String,
+  enum: ["public", "private"],
+  default: "public",
+},
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    owner:{
-        type:Schema.Types.ObjectId,
-        ref:"User",
-        required:true
-    },
-    issues:[
-        {
-            type:Schema.Types.ObjectId,
-            ref:"Issue"
-        }
-    ]
-})
+    issues: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Issue",
+      },
+    ],
+  },
+  { timestamps: true } // ✅ Correct place
+);
 
 const Repository = mongoose.model("Repository", RepositorySchema);
-
 module.exports = Repository;

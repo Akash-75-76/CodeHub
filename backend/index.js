@@ -68,7 +68,12 @@ function startServer() {
   const app = express();
 
   // Middleware
-  app.use(cors({ origin: "*" }));
+  app.use(cors({
+  origin: "http://localhost:5173", // or your deployed frontend URL
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  credentials: true
+}));
+
   app.use(bodyparser.json());
   app.use(bodyparser.urlencoded({ extended: true }));
   app.use("/",mainRouter);

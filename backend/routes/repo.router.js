@@ -1,18 +1,15 @@
 const express = require("express");
-const repoController = require("../controllers/repoController.js");
+const repoController = require("../controllers/repoController");
 
 const repoRouter = express.Router();
 
-// Order matters! Keep static routes first, dynamic last
-repoRouter.post("/create", repoController.createRepository);
-repoRouter.get("/all", repoController.getAllRepositories);
-repoRouter.get("/name/:name", repoController.fetchRepositoryByName);
-repoRouter.get("/user/:userId", repoController.fetchRepositoryForCurrentUser);
-repoRouter.put("/update/:id", repoController.updateRepository);
-repoRouter.patch("/:id/toggle", repoController.toggleVisibility);
-repoRouter.delete("/delete/:id", repoController.deleteRepositoryById);
-
-// Dynamic ID route LAST
-repoRouter.get("/:id", repoController.fetchRepositoryById);
+repoRouter.post("/repo/create", repoController.createRepository);
+repoRouter.get("/repo/all", repoController.getAllRepositories);
+repoRouter.get("/repo/:id", repoController.fetchRepositoryById);
+repoRouter.get("/repo/name/:name", repoController.fetchRepositoryByName);
+repoRouter.get("/repo/user/:userID", repoController.fetchRepositoriesForCurrentUser);
+repoRouter.put("/repo/update/:id", repoController.updateRepositoryById);
+repoRouter.delete("/repo/delete/:id", repoController.deleteRepositoryById);
+repoRouter.patch("/repo/toggle/:id", repoController.toggleVisibilityById);
 
 module.exports = repoRouter;

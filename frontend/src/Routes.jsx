@@ -1,41 +1,57 @@
-import { useEffect } from "react";
-import { useNavigate, useRoutes, useLocation } from "react-router-dom";
+import React, { useEffect } from "react";
+import { useNavigate, useRoutes } from "react-router-dom";
 
-//pages list
+// Pages List
 import Dashboard from "./components/dashboard/Dashboard";
+import Profile from "./components/user/Profile";
 import Login from "./components/auth/Login";
-import Profile from "./components/profile/Profile";
-import Signup from "./components/auth/Signup";
-
-//Auth Context
-import { useAuth } from "./context/AuthContext";
+import Signup from "./components/auth/SignUp";
+import CreateRepository from "./components/user/CreateRepository";
+// Auth Context
+import { useAuth } from "./authContext";
 
 const ProjectRoutes = () => {
   const { currentUser, setCurrentUser } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation();
 
   useEffect(() => {
     const userIdFromStorage = localStorage.getItem("userId");
+    const tokenFromStorage = localStorage.getItem("token");
 
-    if (userIdFromStorage && !currentUser) {
-      setCurrentUser({ id: userIdFromStorage });
+    if (userIdFromStorage && tokenFromStorage && !currentUser) {
+      setCurrentUser(userIdFromStorage);
     }
 
-    if (!userIdFromStorage && !["/auth", "/signup"].includes(location.pathname)) {
+    if ((!userIdFromStorage || !tokenFromStorage) && !["/auth", "/signup"].includes(window.location.pathname)) {
       navigate("/auth");
     }
 
-    if (userIdFromStorage && location.pathname === "/auth") {
-      navigate("/dashboard");
+    if (userIdFromStorage && tokenFromStorage && window.location.pathname === "/auth") {
+      navigate("/");
     }
-  }, [currentUser, navigate, setCurrentUser, location.pathname]);
+  }, [currentUser, navigate, setCurrentUser]);
 
   let element = useRoutes([
-    { path: "/auth", element: <Login /> },
-    { path: "/signup", element: <Signup /> },
-    { path: "/dashboard", element: <Dashboard /> },
-    { path: "/profile", element: <Profile /> },
+    {
+      path: "/",
+      element: currentUser ? <Dashboard /> : <Login />,
+    },
+    {
+      path: "/auth",
+      element: <Login />,
+    },
+    {
+      path: "/signup",
+      element: <Signup />,
+    },
+    {
+      path: "/profile",
+      element: currentUser ? <Profile /> : <Login />,
+    },
+    {
+        path:"/create",
+        element: currentUser ? <CreateRepository/> : <Login />
+    }
   ]);
 
   return element;
