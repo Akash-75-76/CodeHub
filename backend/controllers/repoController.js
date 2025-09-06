@@ -86,18 +86,18 @@ async function fetchRepositoryByName(req, res) {
 }
 
 async function fetchRepositoriesForCurrentUser(req, res) {
-  const { userID } = req.params;
-
   try {
-    const repositories = await Repository.find({ owner: userID });
+    const { userID } = req.params;
 
-    if (!repositories || repositories.length === 0) {
-      return res.status(404).json({ error: "User repositories not found!" });
+    const repos = await Repository.find({ owner: userID })
+      .populate("owner", "username email");
+
+    if (!repos || repos.length === 0) {
+      return res.status(404).json({ message: "No repositories found for this user" });
     }
 
-    res.json({ message: "Repositories found!", repositories });
+    res.json({ repositories: repos });
   } catch (err) {
-    console.error("Error during fetching user repositories:", err.message);
     res.status(500).json({ error: "Server error", details: err.message });
   }
 }
@@ -136,7 +136,8 @@ async function toggleVisibilityById(req, res) {
       return res.status(404).json({ error: "Repository not found!" });
     }
 
-    repository.visibility = !repository.visibility;
+    repository.visibility =
+      repository.visibility === "public" ? "private" : "public";
 
     const updatedRepository = await repository.save();
 
@@ -165,6 +166,42 @@ async function deleteRepositoryById(req, res) {
   }
 }
 
+
+async function getPublicRepositories(req, res) {
+  try {
+    const publicRepos = await Repository.find({ visibility: "public" })
+      .populate("owner", "username email");
+
+    res.json({ repositories: publicRepos });
+  } catch (err) {
+    console.error("Error fetching public repos:", err.message);
+    res.status(500).json({ error: "Server error", details: err.message });
+  }
+}
+
+// Fetch repositories from followed users
+// get repos of people the current user is following
+async function getFollowingRepositories(req, res) {
+  try {
+    const userId = req.user?.id || req.params.userID; // safer
+
+    const user = await User.findById(userId).populate("followedUsers");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    const followingIds = user.followedUsers.map(u => u._id);
+
+    const repos = await Repository.find({
+      owner: { $in: followingIds },
+      visibility: "public",
+    }).populate("owner", "username email");
+
+    res.json({ repositories: repos });
+  } catch (err) {
+    console.error("Error fetching following repos:", err.message);
+    res.status(500).json({ error: "Server error", details: err.message });
+  }
+}
+
 module.exports = {
   createRepository,
   getAllRepositories,
@@ -174,4 +211,6 @@ module.exports = {
   updateRepositoryById,
   toggleVisibilityById,
   deleteRepositoryById,
+  getPublicRepositories,          // add export
+  getFollowingRepositories  
 };

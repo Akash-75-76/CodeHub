@@ -29,7 +29,6 @@ async function signup(req, res) {
     const db = client.db("codehub");
     const usersCollection = db.collection("users");
 
-    // check existing username or email
     const existing = await usersCollection.findOne({
       $or: [{ username }, { email }],
     });
@@ -46,16 +45,15 @@ async function signup(req, res) {
       email,
       repositories: [],
       followedUsers: [],
+      followers: [],
       starRepos: [],
     };
 
     const result = await usersCollection.insertOne(newUser);
 
-    const token = jwt.sign(
-      { id: result.insertedId },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+    const token = jwt.sign({ id: result.insertedId }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     res.json({ token, userId: result.insertedId });
   } catch (err) {
@@ -76,20 +74,15 @@ async function login(req, res) {
     const usersCollection = db.collection("users");
 
     const user = await usersCollection.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: "Invalid credentials!" });
-    }
+    if (!user) return res.status(400).json({ message: "Invalid credentials!" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+    if (!isMatch)
       return res.status(400).json({ message: "Invalid credentials!" });
-    }
 
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
 
     res.json({ token, userId: user._id });
   } catch (err) {
@@ -107,7 +100,10 @@ async function getAllUsers(req, res) {
     const db = client.db("codehub");
     const usersCollection = db.collection("users");
 
-    const users = await usersCollection.find({}).toArray();
+    const users = await usersCollection
+      .find({}, { projection: { password: 0 } })
+      .toArray();
+
     res.json(users);
   } catch (err) {
     console.error("❌ Error fetching users:", err.message);
@@ -126,13 +122,16 @@ async function getUserProfile(req, res) {
     const db = client.db("codehub");
     const usersCollection = db.collection("users");
 
-    const user = await usersCollection.findOne({
-      _id: new ObjectId(currentID),
-    });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found!" });
+    if (!ObjectId.isValid(currentID)) {
+      return res.status(400).json({ message: "Invalid user ID" });
     }
+
+    const user = await usersCollection.findOne(
+      { _id: new ObjectId(currentID) },
+      { projection: { password: 0 } }
+    );
+
+    if (!user) return res.status(404).json({ message: "User not found!" });
 
     res.json(user);
   } catch (err) {
@@ -167,9 +166,8 @@ async function updateUserProfile(req, res) {
       { returnDocument: "after" }
     );
 
-    if (!result.value) {
+    if (!result.value)
       return res.status(404).json({ message: "User not found!" });
-    }
 
     res.json(result.value);
   } catch (err) {
@@ -193,9 +191,8 @@ async function deleteUserProfile(req, res) {
       _id: new ObjectId(currentID),
     });
 
-    if (result.deletedCount === 0) {
+    if (result.deletedCount === 0)
       return res.status(404).json({ message: "User not found!" });
-    }
 
     res.json({ message: "User Profile Deleted!" });
   } catch (err) {
@@ -204,11 +201,167 @@ async function deleteUserProfile(req, res) {
   }
 }
 
+/**
+ * Follow a User
+ */
+async function followUser(req, res) {
+  const userId  = req.user.id; // from auth middleware
+  const { userToFollowId } = req.params;
+
+  
+
+  try {
+    if (!ObjectId.isValid(userId) || !ObjectId.isValid(userToFollowId)) {
+      console.log("❌ Invalid ObjectId(s)");
+      return res.status(400).json({ message: "Invalid user ID(s)" });
+    }
+
+    if (new ObjectId(userId).equals(new ObjectId(userToFollowId))) {
+      console.log("❌ Tried to follow self");
+      return res.status(400).json({ message: "You cannot follow yourself!" });
+    }
+
+    await connectClient();
+    const db = client.db("codehub");
+    const usersCollection = db.collection("users");
+
+    const currentUser = await usersCollection.findOne({ _id: new ObjectId(userId) });
+    const userToFollow = await usersCollection.findOne({ _id: new ObjectId(userToFollowId) });
+
+    if (!userToFollow) {
+      return res.status(404).json({ message: "User to follow not found!" });
+    }
+
+    const alreadyFollowing = currentUser.followedUsers?.some(
+      (id) => id.toString() === userToFollowId
+    );
+    if (alreadyFollowing) {
+      console.log("❌ Already following:", userToFollowId);
+      return res.status(400).json({ message: "Already following this user!" });
+    }
+
+    await usersCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $push: { followedUsers: new ObjectId(userToFollowId) } }
+    );
+
+    await usersCollection.updateOne(
+      { _id: new ObjectId(userToFollowId) },
+      { $push: { followers: new ObjectId(userId) } }
+    );
+
+    console.log("✅ Successfully followed:", userToFollowId);
+    res.json({ message: "Successfully followed user!" });
+  } catch (err) {
+    console.error("❌ Error following user:", err.message);
+    res.status(500).json({ message: err.message });
+  }
+}
+
+
+async function unfollowUser(req, res) {
+  const  userId = req.user.id; // from auth middleware
+  const { userToUnfollowId } = req.params;
+
+  try {
+    if (!ObjectId.isValid(userId) || !ObjectId.isValid(userToUnfollowId)) {
+      return res.status(400).json({ message: "Invalid user ID(s)" });
+    }
+
+    await connectClient();
+    const db = client.db("codehub");
+    const usersCollection = db.collection("users");
+
+    await usersCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $pull: { followedUsers: new ObjectId(userToUnfollowId) } }
+    );
+
+    await usersCollection.updateOne(
+      { _id: new ObjectId(userToUnfollowId) },
+      { $pull: { followers: new ObjectId(userId) } }
+    );
+
+    res.json({ message: "Successfully unfollowed user!" });
+  } catch (err) {
+    console.error("❌ Error unfollowing user:", err.message);
+    res.status(500).json({ message: err.message });
+  }
+}
+
+
+/**
+ * Check Follow Status
+ */
+async function checkFollowStatus(req, res) {
+  const userId = req.user.id; // ✅ from auth middleware
+  const { targetUserId } = req.params;
+
+  try {
+    if (!ObjectId.isValid(targetUserId)) {
+      return res.status(400).json({ message: "Invalid target user ID" });
+    }
+
+    await connectClient();
+    const db = client.db("codehub");
+    const usersCollection = db.collection("users");
+
+    const currentUser = await usersCollection.findOne({
+      _id: new ObjectId(userId),
+    });
+
+    if (!currentUser) {
+      return res.status(404).json({ message: "Current user not found" });
+    }
+
+    const isFollowing = currentUser.followedUsers?.some(
+      (id) => id.toString() === targetUserId
+    ) || false;
+
+    res.json({ isFollowing });
+  } catch (err) {
+    console.error("❌ Error checking follow status:", err.message);
+    res.status(500).json({ message: err.message });
+  }
+}
+
+async function updateProfile(req, res) {
+  try {
+    const userId = req.user.id;
+    const { name, bio } = req.body;
+
+    let updateData = { name, bio };
+
+    if (req.file) {
+      updateData.profilePicture = `/uploads/${req.file.filename}`;
+    }
+
+    await connectClient();
+    const db = client.db("codehub");
+    const usersCollection = db.collection("users");
+
+    await usersCollection.updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: updateData }
+    );
+
+    res.json({ message: "Profile updated successfully", updateData });
+  } catch (err) {
+    console.error("❌ Error updating profile:", err.message);
+    res.status(500).json({ message: err.message });
+  }
+}
+
+
 module.exports = {
   getAllUsers,
   signup,
   login,
+  updateProfile,
   getUserProfile,
   updateUserProfile,
   deleteUserProfile,
+  followUser,
+  unfollowUser,
+  checkFollowStatus,
 };

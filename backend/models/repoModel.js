@@ -3,37 +3,18 @@ const { Schema } = mongoose;
 
 const RepositorySchema = new Schema(
   {
-    name: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    description: {
-      type: String,
-    },
-    content: [
-      {
-        type: String,
-      },
-    ],
+    name: { type: String, required: true, unique: true },
+    description: { type: String },
+    content: [{ type: String }],
     visibility: {
-  type: String,
-  enum: ["public", "private"],
-  default: "public",
-},
-    owner: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      type: String,
+      enum: ["public", "private"],
+      default: "public",
     },
-    issues: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Issue",
-      },
-    ],
+    owner: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    issues: [{ type: Schema.Types.ObjectId, ref: "Issue" }],
   },
-  { timestamps: true } // ✅ Correct place
+  { timestamps: true }
 );
 
 const Repository = mongoose.model("Repository", RepositorySchema);

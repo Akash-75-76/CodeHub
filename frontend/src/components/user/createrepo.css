@@ -1,97 +1,285 @@
+/* createrepo.css */
+:root {
+  --bg-primary: #0d1117;
+  --bg-secondary: #161b22;
+  --bg-tertiary: #21262d;
+  --border-primary: #30363d;
+  --border-secondary: #21262d;
+  --text-primary: #e6edf3;
+  --text-secondary: #7d8590;
+  --text-tertiary: #f0f6fc;
+  --accent-primary: #388bfd;
+  --accent-green: #238636;
+  --accent-red: #da3633;
+  --accent-purple: #8957e5;
+}
+
 .repo-container {
   display: flex;
   justify-content: center;
-  align-items: center;
-  min-height: 90vh;
-  background: #f4f6f8;
+  align-items: flex-start;
+  min-height: calc(100vh - 62px);
+  background-color: var(--bg-primary);
+  padding: 24px 16px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
 }
 
 .repo-form {
-  background: #fff;
-  padding: 2rem;
-  width: 400px;
-  border-radius: 12px;
-  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  padding: 24px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 }
 
 .repo-form h2 {
-  margin-bottom: 1rem;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 24px;
   text-align: center;
-  color: #333;
 }
 
 .repo-form label {
+  display: block;
+  font-size: 14px;
   font-weight: 600;
-  color: #444;
+  color: var(--text-primary);
+  margin-bottom: 8px;
 }
 
-.repo-form input,
+.repo-form input[type="text"],
 .repo-form textarea,
 .repo-form select {
   width: 100%;
-  padding: 0.6rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  padding: 8px 12px;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  color: var(--text-primary);
   font-size: 14px;
-  outline: none;
-  transition: border-color 0.3s ease;
+  margin-bottom: 16px;
+  transition: all 0.2s ease;
 }
 
-.repo-form input:focus,
+.repo-form input[type="text"]:focus,
 .repo-form textarea:focus,
 .repo-form select:focus {
-  border-color: #1976d2;
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 3px rgba(56, 139, 253, 0.3);
 }
 
+.repo-form input[type="text"]::placeholder,
+.repo-form textarea::placeholder {
+  color: var(--text-secondary);
+}
+
+.repo-form textarea {
+  min-height: 100px;
+  resize: vertical;
+}
+
+/* Content Row */
 .content-row {
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.content-row input {
+  flex: 1;
+  margin-bottom: 0;
 }
 
 .content-row button {
-  padding: 0.6rem 1rem;
-  background: #1976d2;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
+  padding: 8px 16px;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .content-row button:hover {
-  background: #1259a5;
+  background-color: rgba(177, 186, 196, 0.12);
+  border-color: var(--border-secondary);
 }
 
+/* Content List */
 .content-list {
-  padding-left: 1.2rem;
-  color: #555;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 16px;
+  max-height: 200px;
+  overflow-y: auto;
 }
 
+.content-list li {
+  padding: 8px 12px;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: 4px;
+  margin-bottom: 8px;
+  color: var(--text-primary);
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.content-list li:last-child {
+  margin-bottom: 0;
+}
+
+/* Select Styling */
+.repo-form select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' width='16' height='16'%3E%3Cpath fill='%237d8590' d='M4.427 7.427l3.396 3.396a.25.25 0 00.354 0l3.396-3.396A.25.25 0 0011.396 7H4.604a.25.25 0 00-.177.427z'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  padding-right: 32px;
+}
+
+/* Submit Button */
 .submit-btn {
-  padding: 0.8rem;
-  background: #1976d2;
-  color: #fff;
-  font-weight: 600;
-  border: none;
-  border-radius: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  background-color: var(--accent-green);
+  color: white;
+  border: 1px solid rgba(240, 246, 252, 0.1);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: background-color 0.2s ease;
+  margin-top: 16px;
 }
 
-.submit-btn:hover {
-  background: #1259a5;
+.submit-btn:hover:not(:disabled) {
+  background-color: #2ea043;
 }
 
 .submit-btn:disabled {
-  background: #aaa;
+  opacity: 0.6;
   cursor: not-allowed;
 }
-.error {
-  color: red;
-  font-size: 13px;
-  margin-top: -8px;
-  margin-bottom: 8px;
+
+/* Dialog Modal */
+.dialog-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.dialog-box {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  padding: 24px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+.dialog-box.success {
+  border-color: rgba(46, 160, 67, 0.4);
+}
+
+.dialog-box.error {
+  border-color: rgba(218, 54, 51, 0.4);
+}
+
+.dialog-box p {
+  color: var(--text-primary);
+  font-size: 16px;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.dialog-box button {
+  padding: 8px 16px;
+  background-color: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.dialog-box button:hover {
+  background-color: rgba(177, 186, 196, 0.12);
+  border-color: var(--border-secondary);
+}
+
+.helper-text {
+  font-size: 12px;
+  font-weight: normal;
+  color: var(--text-secondary);
+  margin-left: 8px;
+}
+
+.visibility-description {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.visibility-description strong {
+  color: var(--text-primary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .repo-container {
+    padding: 16px;
+  }
+  
+  .repo-form {
+    padding: 20px;
+  }
+  
+  .content-row {
+    flex-direction: column;
+  }
+  
+  .content-row button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .repo-form {
+    padding: 16px;
+  }
+  
+  .repo-form h2 {
+    font-size: 20px;
+  }
+  
+  .dialog-box {
+    padding: 20px;
+  }
 }

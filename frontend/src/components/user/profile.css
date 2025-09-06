@@ -1,105 +1,210 @@
 .profile-page-wrapper {
   display: flex;
-  min-height: 100vh;
-  color: whitesmoke;
-  width: 100%;
-  /* flex-wrap: wrap; */
+  padding: 2rem;
+  gap: 2rem;
+  max-width: 1280px;
+  margin: 0 auto;
 }
 
 .user-profile-section {
-  width: 250px;
-  /* min-height: 100vh; */
+  width: 300px;
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  padding: 40px 10px;
+  gap: 1rem;
 }
 
-.user-repo-section {
-  margin: 0px auto;
+.heat-map-section {
+  flex-grow: 1;
   display: flex;
-  flex-wrap: wrap;
-}
-
-.user-name {
-  /* width: 250px; */
-  margin: 10px 20px 10px 10px;
-  /* margin: 10px auto; */
+  flex-direction: column;
+  gap: 2rem;
 }
 
 .profile-image {
-  margin: 10px auto;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background-color: grey;
-}
-
-.follow-btn {
-  background-color: #20272d;
-  width: 250px;
-  margin: 10px auto;
-  height: 40px;
-  border-radius: 10px;
-  color: whitesmoke;
-}
-
-.follower {
-  display: flex;
-  justify-content: center;
-  width: 250px;
-  height: 30px;
-  gap: 10px;
-  margin: 10px auto;
-}
-
-.repo-card-wrapper {
-  margin: 0 auto;
   width: 100%;
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
-  padding: 40px 20px;
 }
 
-.repo {
-  border: 0.5px solid grey;
-  border-radius: 10px;
-  width: 400px;
-  height: 210px;
-  padding: 20px 10px;
+.profile-avatar {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border-primary);
+}
+
+.avatar-placeholder {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background-color: #e1e4e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  color: #6a737d;
+  border: 1px solid var(--border-primary);
+}
+
+.name h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+}
+
+.email {
+  color: var(--text-secondary);
+  margin: 0.25rem 0;
+}
+
+.bio {
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.4;
+  margin-top: 8px;
+  max-width: 250px;
+  word-wrap: break-word;
+}
+
+.follow-btn {
+  padding: 0.5rem 1rem;
+  background-color: #238636;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.follow-btn:hover {
+  background-color: #2ea043;
+}
+
+.follow-btn.following {
+  background-color: #da3633;
+}
+
+.follow-btn.following:hover {
+  background-color: #f85149;
+}
+
+.follower-stats {
+  display: flex;
+  gap: 1rem;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.followers-list h4 {
+  margin: 0.5rem 0;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.mini-avatars {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.mini-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #e1e4e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #6a737d;
+}
+
+.mini-avatar-more {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #e1e4e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: #6a737d;
+}
+
+.profile-stats {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  padding: 1.5rem;
+}
+
+.profile-stats h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.stat-item {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
 }
 
-.repo-name {
+.stat-number {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+#logout {
+  padding: 0.5rem 1rem;
+  background-color: #da3633;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
   cursor: pointer;
-  color: #408ced;
-  font-size: 20px;
-}
-
-.description {
-  color: grey;
-  font-size: 15px;
-}
-
-@media screen and (max-width: 750px) {
-  .repo {
-    width: 100%;
-  }
-}
-
-@media screen and (max-width: 570px) {
-  .user-profile-section {
-    margin: auto;
-  }
-
-  .profile-page-wrapper {
-    display: block;
-  }
+  transition: background-color 0.2s;
 }
 
 #logout:hover {
-  border: 1px solid white;
+  background-color: #f85149;
+}
+
+@media (max-width: 768px) {
+  .profile-page-wrapper {
+    flex-direction: column;
+    padding: 1rem;
+  }
+  
+  .user-profile-section {
+    width: 100%;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
