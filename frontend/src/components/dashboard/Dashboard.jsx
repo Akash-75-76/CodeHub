@@ -32,7 +32,7 @@ const Dashboard = () => {
         // Fetch user's repositories
         try {
           const repoResponse = await fetch(
-            `http://localhost:3000/api/repos/user/${userId}`,
+            `http://3.90.56.59:3000/api/repos/user/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -63,7 +63,7 @@ const Dashboard = () => {
         // Fetch suggested repositories (public repos)
         try {
           const suggestedResponse = await fetch(
-            `http://localhost:3000/api/repos/public`,
+            `http://3.90.56.59:3000/api/repos/public`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -88,7 +88,7 @@ const Dashboard = () => {
         ) {
           try {
             const followedReposResponse = await fetch(
-              `http://localhost:3000/api/repos/following`,
+              `http://3.90.56.59:3000/api/repos/following`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -140,7 +140,7 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/repos/update/${id}`,
+        `http://3.90.56.59:3000/api/repos/update/${id}`,
         {
           method: "PUT",
           headers: {
@@ -172,7 +172,7 @@ const Dashboard = () => {
   const handleToggleVisibility = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://localhost:3000/api/repos/toggle/${id}`, {
+      const res = await fetch(`http://3.90.56.59:3000/api/repos/toggle/${id}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -204,7 +204,7 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/repos/delete/${id}`,
+        `http://3.90.56.59:3000/api/repos/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -231,7 +231,7 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/users/follow/${ownerId}`,
+        `http://3.90.56.59:3000/api/users/follow/${ownerId}`,
         {
           method: "POST",
           headers: {
@@ -245,7 +245,7 @@ const Dashboard = () => {
         // Refresh suggested repos to update UI
         try {
           const suggestedResponse = await fetch(
-            `http://localhost:3000/api/repos/public`,
+            `http://3.90.56.59:3000/api/repos/public`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
