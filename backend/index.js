@@ -69,9 +69,9 @@ function startServer() {
 
   // Middleware
   const allowedOrigins = [
-  "http://localhost:5173",            // local dev
-  "https://codehub.duckdns.org",      // if you host frontend here too
-  "https://main.d1jqjadpadvcks.amplifyapp.com" // your Amplify frontend URL
+  "http://localhost:5173",                       // local dev
+  "https://codehub.duckdns.org",                 // your EC2 domain
+  "https://main.d1jqjadpadvcks.amplifyapp.com"   // Amplify frontend
 ];
 
 app.use(cors({
@@ -82,10 +82,8 @@ app.use(cors({
       callback(new Error("Not allowed by CORS"));
     }
   },
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
-  credentials: true
+  credentials: true,
 }));
-
 
   app.use(bodyparser.json());
   app.use(bodyparser.urlencoded({ extended: true }));
