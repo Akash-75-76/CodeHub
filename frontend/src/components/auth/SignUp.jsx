@@ -53,7 +53,7 @@ const Signup = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post("http://3.90.56.59:3000/api/users/signup", {
+      const res = await axios.post("https://codehub.duckdns.org/api/users/signup", {
         email: email,
         password: password,
         username: username,
@@ -62,7 +62,7 @@ const Signup = () => {
       // Fetch complete user data including followers/following
       try {
         const userRes = await axios.get(
-          `http://3.90.56.59:3000/api/users/${res.data.userId}`,
+          `https://codehub.duckdns.org/api/users/${res.data.userId}`,
           {
             headers: {
               Authorization: `Bearer ${res.data.token}`,

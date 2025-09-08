@@ -91,7 +91,7 @@ const Navbar = () => {
 >
   {currentUser.profilePicture ? (
     <img
-      src={`http://3.90.56.59:3000${currentUser.profilePicture}`}
+      src={`https://codehub.duckdns.org${currentUser.profilePicture}`}
       alt="Profile"
       className="avatar"
     />

@@ -73,7 +73,7 @@ const Update = () => {
 
       const token = localStorage.getItem("token");
 
-      const res = await axios.put("http://3.90.56.59:3000/api/users/update", formData, {
+      const res = await axios.put("https://codehub.duckdns.org/api/users/update", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,

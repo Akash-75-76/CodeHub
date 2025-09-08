@@ -32,7 +32,7 @@ const Dashboard = () => {
         // Fetch user's repositories
         try {
           const repoResponse = await fetch(
-            `http://3.90.56.59:3000/api/repos/user/${userId}`,
+            `https://codehub.duckdns.org/api/repos/user/${userId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -63,7 +63,7 @@ const Dashboard = () => {
         // Fetch suggested repositories (public repos)
         try {
           const suggestedResponse = await fetch(
-            `http://3.90.56.59:3000/api/repos/public`,
+            `https://codehub.duckdns.org/api/repos/public`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -88,7 +88,7 @@ const Dashboard = () => {
         ) {
           try {
             const followedReposResponse = await fetch(
-              `http://3.90.56.59:3000/api/repos/following`,
+              `https://codehub.duckdns.org/api/repos/following`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -140,7 +140,7 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://3.90.56.59:3000/api/repos/update/${id}`,
+        `https://codehub.duckdns.org/api/repos/update/${id}`,
         {
           method: "PUT",
           headers: {
@@ -172,7 +172,7 @@ const Dashboard = () => {
   const handleToggleVisibility = async (id) => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`http://3.90.56.59:3000/api/repos/toggle/${id}`, {
+      const res = await fetch(`https://codehub.duckdns.org/api/repos/toggle/${id}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -204,7 +204,7 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://3.90.56.59:3000/api/repos/delete/${id}`,
+        `https://codehub.duckdns.org/api/repos/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -231,7 +231,7 @@ const Dashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://3.90.56.59:3000/api/users/follow/${ownerId}`,
+        `https://codehub.duckdns.org/api/users/follow/${ownerId}`,
         {
           method: "POST",
           headers: {
@@ -245,7 +245,7 @@ const Dashboard = () => {
         // Refresh suggested repos to update UI
         try {
           const suggestedResponse = await fetch(
-            `http://3.90.56.59:3000/api/repos/public`,
+            `https://codehub.duckdns.org/api/repos/public`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

@@ -36,14 +36,14 @@ const Profile = () => {
 
         // Fetch user details
         const response = await axios.get(
-          `http://3.90.56.59:3000/api/users/${displayedUserId}`,
+          `https://codehub.duckdns.org/api/users/${displayedUserId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setUserDetails(response.data);
 
         // Fetch repositories separately
         const repoResponse = await axios.get(
-          `http://3.90.56.59:3000/api/repos/user/${displayedUserId}`,
+          `https://codehub.duckdns.org/api/repos/user/${displayedUserId}`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
         setRepositories(repoResponse.data.repositories || []);
@@ -52,7 +52,7 @@ const Profile = () => {
         if (!isOwnProfile && currentUser) {
           try {
             const followStatusResponse = await axios.get(
-              `http://3.90.56.59:3000/api/users/follow-status/${displayedUserId}`,
+              `https://codehub.duckdns.org/api/users/follow-status/${displayedUserId}`,
               { headers: { Authorization: `Bearer ${token}` } }
             );
             setIsFollowing(followStatusResponse.data.isFollowing);
@@ -76,7 +76,7 @@ const Profile = () => {
       
       if (isFollowing) {
         await axios.post(
-          `http://3.90.56.59:3000/api/users/unfollow/${displayedUserId}`,
+          `https://codehub.duckdns.org/api/users/unfollow/${displayedUserId}`,
           {},
           {
             headers: {
@@ -92,7 +92,7 @@ const Profile = () => {
         }));
       } else {
         await axios.post(
-          `http://3.90.56.59:3000/api/users/follow/${displayedUserId}`,
+          `https://codehub.duckdns.org/api/users/follow/${displayedUserId}`,
           {},
           {
             headers: {
@@ -221,7 +221,7 @@ const Profile = () => {
           <div className="profile-image">
             {userDetails.profilePicture ? (
               <img
-                src={`http://3.90.56.59:3000${userDetails.profilePicture}`} 
+                src={`https://codehub.duckdns.org${userDetails.profilePicture}`} 
                 alt="Profile"
                 className="profile-avatar"
               />

@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
             setCurrentUser(JSON.parse(userData));
           }
 
-          const response = await fetch(`http://3.90.56.59:3000/api/users/${userId}`, {
+          const response = await fetch(`https://codehub.duckdns.org/api/users/${userId}`, {
             headers: {
               Authorization: `Bearer ${storedToken}`,
             },
@@ -70,7 +70,7 @@ export const AuthProvider = ({ children }) => {
     if (!token || !currentUser?._id) return null;
 
     try {
-      const response = await fetch(`http://3.90.56.59:3000/api/users/${currentUser._id}`, {
+      const response = await fetch(`https://codehub.duckdns.org/api/users/${currentUser._id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

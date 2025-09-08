@@ -71,7 +71,7 @@ function startServer() {
   const allowedOrigins = [
   "http://localhost:5173",            // local dev
   "https://codehub.duckdns.org",      // if you host frontend here too
-  "https://main.d1jqjadpadvcks.amplifyapp.com/auth" // your Amplify frontend URL
+  "https://main.d1jqjadpadvcks.amplifyapp.com" // your Amplify frontend URL
 ];
 
 app.use(cors({

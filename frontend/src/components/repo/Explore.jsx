@@ -23,7 +23,7 @@ const Explore = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://3.90.56.59:3000/api/users", {
+        const res = await axios.get("https://codehub.duckdns.org/api/users", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -34,7 +34,7 @@ const Explore = () => {
         // Check follow status
         const statusPromises = filtered.map(async (u) => {
           const statusRes = await axios.get(
-            `http://3.90.56.59:3000/api/users/follow-status/${u._id}`,
+            `https://codehub.duckdns.org/api/users/follow-status/${u._id}`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
           return { id: u._id, isFollowing: statusRes.data.isFollowing };
@@ -60,13 +60,13 @@ const Explore = () => {
     try {
       if (isFollowing) {
         await axios.post(
-          `http://3.90.56.59:3000/api/users/unfollow/${id}`,
+          `https://codehub.duckdns.org/api/users/unfollow/${id}`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
       } else {
         await axios.post(
-          `http://3.90.56.59:3000/api/users/follow/${id}`,
+          `https://codehub.duckdns.org/api/users/follow/${id}`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -111,7 +111,7 @@ const Explore = () => {
               <CardContent>
                 <Box display="flex" alignItems="center" mb={2}>
                  <Avatar
-  src={user.profilePicture ? `http://3.90.56.59:3000${user.profilePicture}` : undefined}
+  src={user.profilePicture ? `https://codehub.duckdns.org${user.profilePicture}` : undefined}
   alt={user.username}
   sx={{
     bgcolor: user.profilePicture ? "transparent" : "#58a6ff",

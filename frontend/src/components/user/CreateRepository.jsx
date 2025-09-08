@@ -31,7 +31,7 @@ const CreateRepository = () => {
 
     // Check if backend is reachable
     try {
-      await fetch("http://3.90.56.59:3000/", { method: "HEAD", timeout: 5000 });
+      await fetch("https://codehub.duckdns.org/", { method: "HEAD", timeout: 5000 });
     } catch (err) {
       setDialog({ 
         open: true, 
@@ -47,7 +47,7 @@ const CreateRepository = () => {
     try {
       setLoading(true);
 
-      const response = await fetch("http://3.90.56.59:3000/api/repos/create", {
+      const response = await fetch("https://codehub.duckdns.org/api/repos/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
