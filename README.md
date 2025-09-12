@@ -43,9 +43,12 @@ Clone the repository:
 git clone https://github.com/Akash-75-76/CodeHub.git
 cd CodeHub
 
-
 ##backend setup
 cd backend
+npm install
+npm start
+
+cd frontend
 npm install
 npm start
 
