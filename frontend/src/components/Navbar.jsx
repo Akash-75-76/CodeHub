@@ -39,7 +39,7 @@ const Navbar = () => {
       <Link to="/" className="nav-left">
         <div className="brand">
           <img src={logo} alt="GitHub Logo" className="login-logo" />
-          <h3>Convohub</h3>
+          <h3>Codehub</h3>
         </div>
       </Link>
 
