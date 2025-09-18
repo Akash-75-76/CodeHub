@@ -85,6 +85,11 @@ app.use(cors({
   credentials: true,
 }));
 
+
+app.get("/health", (req, res) => {
+  res.json({ status: "ok", message: "Backend is live 🚀" });
+});
+
   app.use(bodyparser.json());
   app.use(bodyparser.urlencoded({ extended: true }));
   app.use("/",mainRouter);
