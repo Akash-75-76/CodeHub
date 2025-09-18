@@ -13,15 +13,20 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Deploy to EC2
+      - name: Deploy to EC2 via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ec2-user
+          username: ${{ secrets.EC2_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            cd ~/CodeHub
+            cd ~/CodeHub || exit 1
             git pull origin main
             npm install
-            pm2 restart codehub || pm2 start "node index.js start" --name codehub
+             pm2 restart codehub || pm2 start "node index.js start" --name codehub
+
+
+
+            
+           
 
