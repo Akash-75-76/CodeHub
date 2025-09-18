@@ -13,8 +13,9 @@ mainRouter.use("/api/users", userRouter);
 mainRouter.use("/api/repos", repoRouter);
 mainRouter.use("/api/issues", issueRouter);
 
-mainRouter.get("/", (req, res) => {
-  res.send("Welcome!");
+
+mainRouter.get("/health", (req, res) => {
+  res.json({ status: "ok", message: "Backend is live 🚀" });
 });
 
 module.exports = mainRouter;
